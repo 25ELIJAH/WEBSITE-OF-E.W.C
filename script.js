@@ -481,3 +481,56 @@ function handleForm(formId, successId) {
 handleForm('donateForm',    'donateSuccess');
 handleForm('volunteerForm', 'volunteerSuccess');
 handleForm('contactForm',   'contactSuccess');
+
+/* ─────────────────────────────────────────────────
+   23. CODE PROTECTION
+───────────────────────────────────────────────── */
+(function protect() {
+
+  // Disable right-click context menu
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  // Block common DevTools keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    const blocked = (
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && ['I','J','C','U'].includes(e.key.toUpperCase())) ||
+      (e.ctrlKey && ['U','S'].includes(e.key.toUpperCase())) ||
+      (e.metaKey && e.altKey && e.key === 'I')
+    );
+    if (blocked) { e.preventDefault(); e.stopPropagation(); return false; }
+  });
+
+  // Disable text selection on non-input elements
+  document.addEventListener('selectstart', function(e) {
+    if (!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) {
+      e.preventDefault();
+    }
+  });
+
+  // Console warning
+  const style = 'color:#D4A017;font-size:20px;font-weight:bold;';
+  const sub   = 'color:#fff;background:#003DA5;padding:4px 10px;border-radius:4px;font-size:13px;';
+  console.log('%c Stop!', style);
+  console.log('%c This website was built for Eagle\'s Wings Community Group. Unauthorized copying or reproduction is prohibited.', sub);
+
+  // DevTools size-change detection
+  const threshold = 160;
+  setInterval(function() {
+    if (
+      window.outerWidth - window.innerWidth > threshold ||
+      window.outerHeight - window.innerHeight > threshold
+    ) {
+      document.body.innerHTML = '';
+      document.body.style.cssText = 'background:#0a0f1e;display:flex;align-items:center;justify-content:center;height:100vh;';
+      const msg = document.createElement('div');
+      msg.style.cssText = 'color:#D4A017;font-family:sans-serif;text-align:center;';
+      msg.innerHTML = '<h2 style="font-size:2rem;margin-bottom:10px;">Access Denied</h2><p style="color:rgba(255,255,255,.6)">Please close Developer Tools and refresh.</p>';
+      document.body.appendChild(msg);
+    }
+  }, 1000);
+
+})();
